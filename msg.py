@@ -58,21 +58,20 @@ class msg:
 
             for song in self.__songlist:
 
-                songblock = ""
-                + "song = {\n"
-                + "\tname = \""+song+"\"\n\n"
-                + "\tchance = {\n"
-                + "\t\tmodifier = {\n"
-                + "\t\t\tfactor = "+str(self.factor)+"\n"
-                + "\t\t}\n"
-                + "\t}\n"
-                + "}\n"
+                songblock = "song = {\n"
+                songblock += "\tname = \""+song+"\"\n\n"
+                songblock += "\tchance = {\n"
+                songblock += "\t\tmodifier = {\n"
+                songblock += "\t\t\tfactor = "+str(self.__factor)+"\n"
+                songblock += "\t\t}\n"
+                songblock += "\t}\n"
+                songblock += "}\n\n"
                 musicfile.write(songblock)
 
-if __name__ == "__man__":
+if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description='Generate a music script')
-    parser.add_argument("-f", "--factor", type=float, default=1,
+    parser.add_argument("-f", "--factor", type=float, default=1.0,
                         help="the factor of occurrence for the music;\n"
                         "default is 1")
     parser.add_argument("-p", "--path", default=os.getcwd(), help="the "
@@ -83,34 +82,33 @@ if __name__ == "__man__":
                         help="the name of your music script;\ndefault is "
                         "mysongs.txt")
 
-    _factor = parser.parse_args(["-f, --factor"])
-    _path = parser.parse_args(["-p, --path"])
-    _musicfile = parser.parse_args(["-m, --musicfile"])
+    args = parser.parse_args()
 
-    if cwd != _path:
+    if cwd != args.path:
 
         try:
 
-            cwd = os.chdir(_path)
+            os.chdir(args.path)
+            cwd = os.getcwd()
 
         except:
 
             print("Invalid path specified. Exiting...")
             exit()
 
-    if _path[-4:] != ".txt":
+    if args.musicfile[-4:] != ".txt":
 
         print("You did not enter a file name that ends with .txt.")
         print("Please re-run the script with the file name corrected.")
         exit()
 
-    if _factor < 0:
+    if args.factor < 0:
 
         print("Invalid factor specified. Please re-run the script with a with "
               "a factor > 0 or let me handle it for you with the default "
               "value (1.0)")
         exit()
 
-    msg_obj = msg(_factor, _musicfile)
+    msg_obj = msg(args.factor, args.musicfile)
     msg_obj.generate_song_list()
     msg_obj.write_songs_to_file()
