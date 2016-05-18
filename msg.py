@@ -28,8 +28,6 @@ class msg:
         self.__musicfilename = musicfilename
         self.__songlist = []
 
-    # TODO: Implement the functions
-
     def generate_song_list(self):
 
         # NOTE: Implementation will only add files with a .ogg ending since
