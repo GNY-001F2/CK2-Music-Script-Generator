@@ -70,7 +70,7 @@ class msg:
 
 if __name__ == "__main__":
 
-    parser = argparse.ArgumentParser(description='Generate a music script')
+    parser = argparse.ArgumentParser(description='Generate a CK2 music script')
     parser.add_argument("-f", "--factor", type=float, default=1.0,
                         help="the factor of occurrence for the music;\n"
                         "default is 1")
