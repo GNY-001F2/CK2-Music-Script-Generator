@@ -14,53 +14,71 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-import argparse;
+import argparse
+import os
+
 
 class msg:
-    
-    def __init__(self, factor, path, musicfile):
-        self.factor = factor;
-        self.path = path;
-        self.musicfile = musicfile;
+
+    def __init__(self, factor, musicfilename):
+
+        self.factor = factor
+        self.musicfilename = musicfilename
 
     # TODO: Implement the functions
 
     def create_music_script_file(self):
-        
+
+        test = "test"
+
     def generate_song_list(self):
+
         # NOTE: Implementation will only add files with a .ogg ending since
         # CK2 only supports Vorbis-encoded music. It will ignore any
         # subdirectories as well.
-        self.songlist = [];
-        
+        self.songlist = []
+
     def write_songs_to_file(self):
+
         for song in songlist:
-            songblock  = "song = {\n"
-                       + "\tname = \""+song+"\"\n\n"
-                       + "\tchance = {\n"
-                       + "\t\tmodifier = {\n"
-                       + "\t\t\tfactor = "+str(self.factor)+"\n"
-                       + "\t\t}\n"
-                       + "\t}\n"
-                       + "}\n";
-            
+
+            songblock = ""
+            + "song = {\n"
+            + "\tname = \""+song+"\"\n\n"
+            + "\tchance = {\n"
+            + "\t\tmodifier = {\n"
+            + "\t\t\tfactor = "+str(self.factor)+"\n"
+            + "\t\t}\n"
+            + "\t}\n"
+            + "}\n"
+
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Generate a music script');
+
+    parser = argparse.ArgumentParser(description='Generate a music script')
     parser.add_argument(["-f", "--factor"], type=float, default=1,
                         help="the factor of occurrence for the music; "
-                        "default is 1");
-    parser.add_argument(["-p", "--path"], required=True, help="the directory "
-                        "where all your music is located; REQUIRED");
+                        "default is 1")
+    parser.add_argument(["-p", "--path"], required=True, help="the absolute"
+                        "directory where all your music is located; REQUIRED")
     parser.add_argument(["-m", "--musicfile"], default="mysongs.txt",
                         help="the name of your music script; default is "
-                        "mysongs.txt");
-    args = parser.parse_args();
-    
+                        "mysongs.txt")
+    args = parser.parse_args()
+
     # TODO: check if the input values are appropriate, otherwise complain and
     # exit the program
     # Specifically, songs file name should end with a .txt, and the path
     # supplied should be valid
-    
-    msg_obj = msg(args.factor, args.path, args.musicfile);
-    msg_obj.create_music_script_file();
-    msg_obj.generate_song_list();
+
+    # Handle invalid path
+    cwd = os.getcwd()
+    if cwd != args.path:
+        try:
+            cwd = os.chdir(args.path)
+        except:
+            print("Invalid path specified. Exiting...")
+            exit()
+
+    msg_obj = msg(args.factor, args.musicfile)
+    msg_obj.create_music_script_file()
+    msg_obj.generate_song_list()
