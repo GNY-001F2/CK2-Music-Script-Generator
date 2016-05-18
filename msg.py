@@ -15,10 +15,19 @@ class msg:
         # NOTE: Implementation will only add files with a .ogg ending since
         # CK2 only supports Vorbis-encoded music. It will ignore any
         # subdirectories as well.
+        self.songlist = [];
         
     def write_songs_to_file(self):
-        
-        
+        for song in songlist:
+            songblock  = "song = {\n"
+                       + "\tname = \""+song+"\"\n\n"
+                       + "\tchance = {\n"
+                       + "\t\tmodifier = {\n"
+                       + "\t\t\tfactor = "+self.factor+"\n"
+                       + "\t\t}\n"
+                       + "\t}\n"
+                       + "}\n"
+            
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Generate a music script');
     parser.add_argument(["-f", "--factor"], type=float, default=1,
