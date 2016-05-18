@@ -17,73 +17,100 @@
 import argparse
 import os
 
+cwd = os.getcwd()
+
 
 class msg:
 
     def __init__(self, factor, musicfilename):
 
-        self.factor = factor
-        self.musicfilename = musicfilename
+        self.__factor = factor
+        self.__musicfilename = musicfilename
+        self.__songlist = []
 
     # TODO: Implement the functions
-
-    def create_music_script_file(self):
-
-        test = "test"
 
     def generate_song_list(self):
 
         # NOTE: Implementation will only add files with a .ogg ending since
         # CK2 only supports Vorbis-encoded music. It will ignore any
         # subdirectories as well.
-        self.songlist = []
+        # WARNING: Make sure your music is correctly encoded. This script
+        # will only check filenames so it is your responsibility to ensure
+        # that the content inside is actually playable by the game - ogg
+        # containers with vorbis encoded data
+
+        global cwd
+        for fname in os.listdir(cwd):
+            dirorfilename = os.path.join(cwd, fname)
+            if os.path.isfile(dirorfilename) and dirorfilename[-4:] == ".ogg":
+                self.__songlist.append(fname)
 
     def write_songs_to_file(self):
 
-        for song in songlist:
+        # WARNING: This will erase any previously existing file with the same
+        # name!
 
-            songblock = ""
-            + "song = {\n"
-            + "\tname = \""+song+"\"\n\n"
-            + "\tchance = {\n"
-            + "\t\tmodifier = {\n"
-            + "\t\t\tfactor = "+str(self.factor)+"\n"
-            + "\t\t}\n"
-            + "\t}\n"
-            + "}\n"
+        musicfile = open(self.__musicfilename, "w")
+        musicfile.close()
 
-if __name__ == '__main__':
+        with open(self.__musicfilename, "a", encoding='cp1252') as musicfile:
+
+            for song in self.__songlist:
+
+                songblock = ""
+                + "song = {\n"
+                + "\tname = \""+song+"\"\n\n"
+                + "\tchance = {\n"
+                + "\t\tmodifier = {\n"
+                + "\t\t\tfactor = "+str(self.factor)+"\n"
+                + "\t\t}\n"
+                + "\t}\n"
+                + "}\n"
+                musicfile.write(songblock)
+
+if __name__ == "__man__":
 
     parser = argparse.ArgumentParser(description='Generate a music script')
-    parser.add_argument(["-f", "--factor"], type=float, default=1,
+    parser.add_argument("-f", "--factor", type=float, default=1,
                         help="the factor of occurrence for the music;\n"
                         "default is 1")
-    parser.add_argument(["-p", "--path"], default = os.getcwd(), help="the "
-                        "absolute directory where all your music is located;\n"
-                        "default is your current working directory")
-    parser.add_argument(["-m", "--musicfile"], default="mysongs.txt",
+    parser.add_argument("-p", "--path", default=os.getcwd(), help="the "
+                        "absolute or relative to current directory path "
+                        "where all your music is located;\ndefault is your "
+                        "current working directory")
+    parser.add_argument("-m", "--musicfile", default="mysongs.txt",
                         help="the name of your music script;\ndefault is "
                         "mysongs.txt")
-    args = parser.parse_args()
 
-    # TODO: check if the input values are appropriate, otherwise complain and
-    # exit the program
-    # Specifically, songs file name should end with a .txt, and the path
-    # supplied should be valid
+    _factor = parser.parse_args(["-f, --factor"])
+    _path = parser.parse_args(["-p, --path"])
+    _musicfile = parser.parse_args(["-m, --musicfile"])
 
-    # Handle invalid path
-    cwd = os.getcwd()
-    if cwd != args.path:
+    if cwd != _path:
+
         try:
-            cwd = os.chdir(args.path)
+
+            cwd = os.chdir(_path)
+
         except:
+
             print("Invalid path specified. Exiting...")
             exit()
 
-    # TODO: check that filename doesn't exceed maximum permitted length
-    # TODO: check that the value of factor isn't negative and doesn't exceed
-    # the maximum allowed
+    if _path[-4:] != ".txt":
 
-    msg_obj = msg(args.factor, args.musicfile)
-    msg_obj.create_music_script_file()
+        print("You did not enter a file name that ends with .txt.")
+        print("Please re-run the script with the file name corrected.")
+        exit()
+
+    if _factor < 0:
+
+        print("Invalid factor specified. Please re-run the script with a with "
+              "a factor > 0 or let me handle it for you with the default "
+              "value (1.0)")
+        exit()
+
+    msg_obj = msg(_factor, _musicfile)
     msg_obj.generate_song_list()
+    msg_obj.write_songs_to_file()
