@@ -56,12 +56,13 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='Generate a music script')
     parser.add_argument(["-f", "--factor"], type=float, default=1,
-                        help="the factor of occurrence for the music; "
+                        help="the factor of occurrence for the music;\n"
                         "default is 1")
-    parser.add_argument(["-p", "--path"], required=True, help="the absolute"
-                        "directory where all your music is located; REQUIRED")
+    parser.add_argument(["-p", "--path"], default = os.getcwd(), help="the "
+                        "absolute directory where all your music is located;\n"
+                        "default is your current working directory")
     parser.add_argument(["-m", "--musicfile"], default="mysongs.txt",
-                        help="the name of your music script; default is "
+                        help="the name of your music script;\ndefault is "
                         "mysongs.txt")
     args = parser.parse_args()
 
@@ -78,6 +79,10 @@ if __name__ == '__main__':
         except:
             print("Invalid path specified. Exiting...")
             exit()
+
+    # TODO: check that filename doesn't exceed maximum permitted length
+    # TODO: check that the value of factor isn't negative and doesn't exceed
+    # the maximum allowed
 
     msg_obj = msg(args.factor, args.musicfile)
     msg_obj.create_music_script_file()
