@@ -22,7 +22,7 @@ cwd = os.getcwd()
 
 class msg:
 
-    def __init__(self, factor, musicfilename, conditionfactor, conditionfile):
+    def __init__(self, factor, musicfile, conditionfactor, conditionfile):
 
         self.__factor = factor
         self.__musicfile = musicfile
@@ -57,15 +57,33 @@ class msg:
 
             for song in self.__songlist:
 
+                #NOTE: This script uses four-space indentations
+
                 songblock = "song = {\n"
-                songblock += "\tname = \""+song+"\"\n\n"
-                songblock += "\tchance = {\n"
-                if __conditionfactor:
-                    songblock += "\tfactor = "+str(self.__conditionfactor)
-                songblock += "\t\tmodifier = {\n"
-                songblock += "\t\t\tfactor = "+str(self.__factor)+"\n"
-                songblock += "\t\t}\n"
-                songblock += "\t}\n"
+                songblock += "    name = \""+song+"\"\n"
+                songblock += "    chance = {\n"
+
+                if self.__conditionfactor:
+
+                    songblock += "        factor = "
+                    songblock += str(self.__conditionfactor)+"\n"
+
+                if not self.__conditionfile:
+
+                    songblock += "        modifier = {\n"
+                    songblock += "            factor = "
+                    songblock += str(self.__factor)+"\n"
+                    songblock += "        }\n"
+
+                else:
+
+                    with open(self.__conditionfile, "r") as conditionfile:
+
+                        for line in conditionfile:
+
+                            songblock += "        "+line
+
+                songblock += "    }\n"
                 songblock += "}\n\n"
                 musicfile.write(songblock)
 
@@ -82,15 +100,17 @@ if __name__ == "__main__":
         argparse.ArgumentParser(description="Generate a CK2 music script",
                                 formatter_class=argparse.RawTextHelpFormatter)
     parser.add_argument("-f", "--factor", type=float, default=1.0,
-                        help="the factor of occurrence for the music; "
+                        help="The factor of occurrence for the music; "
                         "default is 1.")
     parser.add_argument("-p", "--path", default=os.getcwd(), help="the "
-                        "absolute or relative to current directory path "
+                        "Absolute or relative to current directory path "
                         "where all your music is located; default is your "
                         "current working directory.")
     parser.add_argument("-m", "--musicfile", default="mysongs.txt",
                         help="the name of your music script; default is "
-                        "mysongs.txt.")
+                        "mysongs.txt.\n"
+                        "WARNING: This will erase any previous file with the"
+                        "same name!")
     parser.add_argument("--conditionfactor", type=float, default=None,
                         help="If set, it will add an initial value of factor "
                         "= <your input value> after the chance attribute")
@@ -100,7 +120,7 @@ if __name__ == "__main__":
                         "stored in the location the music files being written "
                         "to the script.\n"
                         "This will automatically set CONDITIONFACTOR to 1.0 "
-                        "if you do not specify a custom CONDITIONFACTOR")
+                        "if you do not specify a custom CONDITIONFACTOR.")
 
     args = parser.parse_args()
 
@@ -120,6 +140,10 @@ if __name__ == "__main__":
 
         cfset = True
 
+    else:
+
+        cfset = False
+
     if args.conditionfile:
 
             try:
@@ -136,10 +160,12 @@ if __name__ == "__main__":
                       "use the default modifiers.")
                 exit()
 
-    if args.conditionfactor < 0:
-        print("Invalid conditionfactor specified. Please re-run the script "
-              "with a with a conditionfactor > 0 or don't set one.")
-        exit()
+    if cfset:
+
+        if args.conditionfactor < 0:
+            print("Invalid conditionfactor specified. Please re-run the "
+                  "script with a with a conditionfactor > 0 or don't set one.")
+            exit()
 
     if args.musicfile[-4:] != ".txt":
 
