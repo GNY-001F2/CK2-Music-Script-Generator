@@ -57,7 +57,7 @@ class msg:
 
             for song in self.__songlist:
 
-                #NOTE: This script uses four-space indentations
+                # NOTE: This script uses four-space indentations
 
                 songblock = "song = {\n"
                 songblock += "    name = \""+song+"\"\n"
