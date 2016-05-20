@@ -57,7 +57,7 @@ class msg:
 
             for song in self.__songlist:
 
-                #NOTE: This script uses four-space indentations
+                # NOTE: This script uses four-space indentations
 
                 songblock = "song = {\n"
                 songblock += "    name = \""+song+"\"\n"
@@ -101,7 +101,9 @@ if __name__ == "__main__":
                                 formatter_class=argparse.RawTextHelpFormatter)
     parser.add_argument("-f", "--factor", type=float, default=1.0,
                         help="The factor of occurrence for the music; "
-                        "default is 1.")
+                        "default is 1.\n"
+                        "This condition is ignored if custom modifiers are "
+                        "supplied with a CONDITIONFILE.")
     parser.add_argument("-p", "--path", default=os.getcwd(), help="the "
                         "Absolute or relative to current directory path "
                         "where all your music is located; default is your "
