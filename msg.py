@@ -97,7 +97,7 @@ def create_song_script(factor, musicfile, conditionfactor, conditionfile):
 if __name__ == "__main__":
 
     parser = \
-        argparse.ArgumentParser(description="Generate a CK2 music script",
+        argparse.ArgumentParser(description="Generate a CK2 music script.",
                                 formatter_class=argparse.RawTextHelpFormatter)
     parser.add_argument("-f", "--factor", type=float, default=1.0,
                         help="The factor of occurrence for the music; "
@@ -122,7 +122,9 @@ if __name__ == "__main__":
                         "stored in the location the music files being written "
                         "to the script.\n"
                         "This will automatically set CONDITIONFACTOR to 1.0 "
-                        "if you do not specify a custom CONDITIONFACTOR.")
+                        "if you do not specify a custom CONDITIONFACTOR.\n"
+                        "WARNING: If your CONDITIONFILE is empty, then the "
+                        "script will not add any modifiers!")
 
     args = parser.parse_args()
 
