@@ -1,0 +1,8 @@
+title: CK2-Music-Script-Generator
+description: Automatically generate a script for all the music in your music mod.
+google_analytics: 
+show_downloads: true
+theme: jekyll-theme-minimal
+
+gems:
+  - jekyll-mentions
